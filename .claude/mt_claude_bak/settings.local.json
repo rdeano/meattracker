@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "PowerShell(Get-Command *)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe --version)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe /c/laragon/bin/composer/composer.phar --version)",
+      "Bash(cd *)"
+    ]
+  }
+}

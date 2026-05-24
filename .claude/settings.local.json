@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "PowerShell(Get-Command *)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe --version)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe /c/laragon/bin/composer/composer.phar --version)",
+      "Bash(cd *)",
+      "Bash(mv /tmp/mt_claude_bak /c/laragon/www/MeatTracker/.claude)",
+      "Bash(mv /tmp/mt_claude_md_bak /c/laragon/www/MeatTracker/CLAUDE.md)",
+      "Bash(export COMPOSER_EXECUTABLE=\"$PHP $COMPOSER\")",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe -d variables_order=EGPCS artisan breeze:install react --no-interaction)",
+      "Bash(/c/laragon/bin/nodejs/node-v22/node.exe --version)",
+      "Bash($MYSQL *)",
+      "Bash(npm run *)",
+      "Bash(php artisan *)",
+      "PowerShell(& \"C:\\\\laragon\\\\bin\\\\php\\\\php8.3.14\\\\php.exe\" artisan route:list --name=dashboard 2>&1)",
+      "Bash(/c/laragon/bin/php/php-8.3.30-Win32-vs16-x64/php.exe artisan *)",
+      "Bash(grep -rL 'protected $table' /c/laragon/www/MeatTracker/app/Models/)",
+      "Bash(grep \"\\\\.php$\")",
+      "Bash(grep *)"
+    ]
+  }
+}
