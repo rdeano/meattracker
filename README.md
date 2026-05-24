@@ -1,58 +1,149 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Karne ni Nanay 🥩
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Daily operations management system for a carabao meat vendor. Replaces a physical notebook with a mobile-friendly web app for tracking capital, sales, purchases, freezer stock, and producing a daily reconciliation and profit summary.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Layer | Technology |
+|---|---|
+| Language | PHP 8.3 |
+| Framework | Laravel 11 |
+| Frontend | React 18 + Inertia.js |
+| UI Library | MUI v6 |
+| Database | MySQL 8 |
+| Auth | Laravel Breeze |
+| Build Tool | Vite |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Dashboard** — Full day overview with quick-add for every transaction type; date-navigable
+- **Timbang Carabao** — Log carabao purchases by weight and price/kg
+- **Hango** — Record purchases from market vendors with itemized cut breakdown
+- **Collectibles** — Credit sales to suki customers with optional auto-sync to their tab
+- **Cash Sales** — Walk-in / cash-on-the-spot sales with itemized cuts
+- **Entrails Sales** — Track liver, kidney, tripe and other by-products (cash or credit)
+- **Cash Received** — Record debt payments and other cash collections
+- **Cash Out** — Log expenses and disbursements
+- **Freezer In / Out** — Track stock entering and leaving the freezer by cut
+- **Freezer Stock** — Running balance per cut with peso value; view individual entries or totals
+- **Daily Summary** — Reconciliation balance and net profit/loss for any date
+- **Suki Ledger** — Per-customer debt notebook with charge entries, payments, and running balance
+- **Suppliers / Cuts / Settings** — Master data management
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Business Logic
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+### Daily Reconciliation (Balance)
+```
++ Timbang total (carabao purchases)
++ Cash received
++ Hango total (market purchases)
++ Freezer out value
+─────────────────────────────────
+- Collectibles total (credit sales)
+- Freezer in value
+- Cash sales total
+- Cash out total
+= BALANCE  (should equal physical cash on hand)
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Daily Profit
+```
++ Cash sales total
++ Collectibles total  (earned today, collected later)
++ Entrails sales total  (zero-cost by-products = pure profit)
+─────────────────────────────────
+- Timbang total
+- Hango total
+- Cash out total
+= NET GAIN / LOSS
+```
 
-## Contributing
+### Suki Tab Balance
+```
+SUM(tab entries) − SUM(payments) = BALANCE OWED
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Freezer Stock (per cut)
+```
+SUM(freezer_in.weight_kg) − SUM(freezer_out.weight_kg) = CURRENT STOCK
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Local Development
 
-## Security Vulnerabilities
+### Requirements
+- PHP 8.3+
+- Composer
+- Node.js 20+
+- MySQL 8
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Setup
 
-## License
+```bash
+# Clone and install dependencies
+composer install
+npm install
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Configure environment
+cp .env.example .env
+php artisan key:generate
+
+# Set DB credentials in .env, then migrate and seed
+php artisan migrate --seed
+
+# Build frontend
+npm run build
+
+# Or run Vite dev server
+npm run dev
+```
+
+### Running the App
+
+With [Laragon](https://laragon.org/) (recommended on Windows), the app is served automatically. Otherwise:
+
+```bash
+php artisan serve
+```
+
+---
+
+## Database
+
+All monetary values use `DECIMAL(10,2)` — never `float`. All dates use `DATE` type. All transaction tables use soft deletes (`deleted_at`). Stored `total` columns are computed on save for historical accuracy (prices may change later).
+
+Key tables: `timbang_carabao`, `hango_transactions`, `hango_items`, `collectible_transactions`, `collectible_items`, `cash_sales_transactions`, `cash_sales_items`, `entrails_sales`, `cash_received`, `cash_out`, `freezer_in`, `freezer_out`, `suki`, `suki_tab_entries`, `suki_payments`, `suppliers`, `cuts`, `settings`.
+
+---
+
+## Project Structure
+
+```
+app/
+  Http/Controllers/    — Thin controllers, one per resource
+  Services/            — Business logic (DailySummaryService, SukiLedgerService, FreezerStockService)
+  Models/              — Eloquent models
+
+resources/js/
+  Pages/               — Inertia page components (React)
+  Components/          — Shared components (DateNavigator, NameInput)
+  Layouts/             — AppLayout (sidebar nav + flash messages)
+```
+
+---
+
+## Notes
+
+- Owner-only app — single user, no roles needed
+- All routes use Inertia (no API endpoints)
+- Mobile-first layout — owner uses phone in the market
+- Collectibles can include both meat cuts and entrails (sukis buy both together)
+- Entrails sales are informational in the profit summary — zero cost, pure margin
+- The suki tab is manually maintained and independent of the collectibles ledger

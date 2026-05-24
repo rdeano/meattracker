@@ -158,7 +158,7 @@ const theme = createTheme({
 const appName = import.meta.env.VITE_APP_NAME || 'MeatTracker';
 
 createInertiaApp({
-    title: (title) => `${title} — ${appName}`,
+    title: (title) => `${title} ${appName}`,
     resolve: (name) =>
         resolvePageComponent(
             `./Pages/${name}.jsx`,
