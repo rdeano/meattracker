@@ -16,7 +16,7 @@ export default function Login({ status }) {
     return (
         <Box sx={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: 'grey.100' }}>
             <Paper sx={{ p: 4, width: '100%', maxWidth: 400 }}>
-                <Typography variant="h5" fontWeight={700} gutterBottom color="primary">Karne ni Nanay</Typography>
+                <Typography variant="h5" fontWeight={700} gutterBottom color="primary">Meat Tracker</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>Daily operations management</Typography>
                 {status && <Typography color="success.main" sx={{ mb: 2 }}>{status}</Typography>}
                 <form onSubmit={submit}>
